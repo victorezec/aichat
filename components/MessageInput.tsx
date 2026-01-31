@@ -1,28 +1,31 @@
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "../theme/colors";
 
-export default function MessageInput({ onSend }: { onSend: (text: string) => void }) {
+type Props = {
+  onSend: (text: string) => void;
+};
+
+export default function MessageInput({ onSend }: Props) {
   const [text, setText] = useState("");
+
+  const handleSend = () => {
+    if (!text.trim()) return;
+    onSend(text);
+    setText("");
+  };
 
   return (
     <View style={styles.container}>
       <TextInput
+        style={styles.input}
+        placeholder="Type a message"
         value={text}
         onChangeText={setText}
-        placeholder="Ask me anything..."
-        placeholderTextColor={colors.textSecondary}
-        style={styles.input}
       />
-      <TouchableOpacity
-        onPress={() => {
-          if (!text.trim()) return;
-          onSend(text);
-          setText("");
-        }}
-        style={styles.send}
-      >
-        <Text style={styles.sendText}>➤</Text>
+      <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
+        <MaterialIcons name="send" size={20} color="#fff" />
       </TouchableOpacity>
     </View>
   );
@@ -32,24 +35,25 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     padding: 12,
+    alignItems: "center",
+    backgroundColor: colors.background,
     borderTopWidth: 1,
-    borderTopColor: "#1E293B",
-    backgroundColor: colors.card
+    borderTopColor: colors.card,
   },
   input: {
     flex: 1,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: colors.card,
     color: colors.textPrimary,
-    fontSize: 16
   },
-  send: {
+  sendButton: {
     marginLeft: 12,
     backgroundColor: colors.accent,
     borderRadius: 20,
-    paddingHorizontal: 16,
-    justifyContent: "center"
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  sendText: {
-    color: "#000",
-    fontSize: 18
-  }
 });

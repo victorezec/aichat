@@ -2,36 +2,38 @@ import { View, Text, StyleSheet } from "react-native";
 import { Message } from "../types/chat";
 import { colors } from "../theme/colors";
 
-export default function ChatBubble({ message }: { message: Message }) {
+type Props = { message: Message };
+
+export default function ChatBubble({ message }: Props) {
   const isUser = message.role === "user";
 
   return (
-    <View style={[
-      styles.bubble,
-      isUser ? styles.user : styles.ai
-    ]}>
-      <Text style={styles.text}>{message.text}</Text>
+    <View
+      style={[
+        styles.container,
+        isUser ? styles.userContainer : styles.aiContainer
+      ]}
+    >
+      <Text style={isUser ? styles.userText : styles.aiText}>{message.text}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  bubble: {
+  container: {
+    marginVertical: 4,
     maxWidth: "80%",
     padding: 12,
-    borderRadius: 16,
-    marginBottom: 12
+    borderRadius: 16
   },
-  user: {
+  userContainer: {
     backgroundColor: colors.userBubble,
     alignSelf: "flex-end"
   },
-  ai: {
+  aiContainer: {
     backgroundColor: colors.aiBubble,
     alignSelf: "flex-start"
   },
-  text: {
-    color: colors.textPrimary,
-    fontSize: 16
-  }
+  userText: { color: colors.textPrimary },
+  aiText: { color: colors.textSecondary }
 });
