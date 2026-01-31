@@ -13,7 +13,7 @@ export default function ChatScreen() {
     {
       id: "1",
       role: "assistant",
-      text: "Hi 👋 I’m your AI assistant. How can I help you today?"
+      text: "Hi I'm your AI assistant. How can I help you today?"
     }
   ]);
 
