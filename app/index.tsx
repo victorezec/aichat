@@ -7,6 +7,7 @@ import {
   Animated,
   View,
   TouchableOpacity,
+  Text,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Speech from "expo-speech";
@@ -23,6 +24,7 @@ export default function ChatScreen() {
 
   const [typingDots, setTypingDots] = useState("...");
   const [speechEnabled, setSpeechEnabled] = useState(true);
+  const [scrolledDown, setScrolledDown] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -50,6 +52,17 @@ export default function ChatScreen() {
       Speech.stop();
     }
     setSpeechEnabled(!speechEnabled);
+  };
+
+  // Handle scroll to show/hide scroll to top button
+  const handleScroll = (event: any) => {
+    const scrollPosition = event.nativeEvent.contentOffset.y;
+    setScrolledDown(scrollPosition > 300);
+  };
+
+  // Scroll to top
+  const scrollToTop = () => {
+    flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
   };
 
   // Send message (typed)
@@ -107,6 +120,7 @@ export default function ChatScreen() {
     <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
       {/* Speech Toggle Button */}
       <View style={styles.header}>
+        <Text style={styles.aiName}>VEC-AI</Text>
         <TouchableOpacity
           onPress={handleSpeechToggle}
           style={styles.toggleButton}
@@ -132,10 +146,22 @@ export default function ChatScreen() {
             </Animated.View>
           )}
           contentContainerStyle={styles.list}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
         />
 
         {/* Message input without mic */}
         <MessageInput onSend={handleSend} />
+
+        {/* Scroll to Top Button */}
+        {scrolledDown && (
+          <TouchableOpacity
+            onPress={scrollToTop}
+            style={styles.scrollToTopButton}
+          >
+            <MaterialIcons name="arrow-upward" size={24} color="#fff" />
+          </TouchableOpacity>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -146,13 +172,28 @@ const styles = StyleSheet.create({
   list: { padding: 16, paddingBottom: 8 },
   header: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: colors.card,
   },
+  aiName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.accent,
+  },
   toggleButton: {
     padding: 8,
+  },
+  scrollToTopButton: {
+    position: "absolute",
+    bottom: 70,
+    alignSelf: "center",
+    backgroundColor: colors.accent,
+    borderRadius: 50,
+    padding: 8,
+    opacity: 0.3,
   },
 });
