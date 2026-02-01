@@ -1,6 +1,6 @@
 export async function sendMessageToAI(message: string) {
   try {
-    const res = await fetch("https://homeburgchemicals.com/chat.php", {
+    const res = await fetch("https://domain.com/chat.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message })
